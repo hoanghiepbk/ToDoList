@@ -1,0 +1,32 @@
+body{
+  text-align: center;
+}
+
+.date{
+  padding: 38px;
+}
+
+.box {
+  width: 36%;
+  margin: 0 auto 18px;
+}
+
+.work-box {
+  text-align: left;
+}
+
+input:checked+label {
+  text-decoration: line-through;
+}
+
+.button-box{
+  padding: 0;
+}
+
+.button-add {
+  width: 100%;
+}
+
+.footer{
+  padding: 10px;
+}

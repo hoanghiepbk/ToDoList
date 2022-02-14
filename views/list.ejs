@@ -1,0 +1,39 @@
+<%- include('header'); -%>
+    <div class="container-fluid">
+      <h1 class="date">
+        <%= day -%>
+      </h1>
+      <h2>Score : <%= score %></h2>
+      <div class="row">
+        <% for(let i = 0; i < lists.length; i++) { %>
+        <div class="col-4">
+          <h2><%= lists[i].name %></h2>
+          <ul class="box">
+            <% for(let j = 0; j < lists[i].items.length; j++) { %>
+              <div class="form-check work-box">
+                <form class="" action="/done" method="post">
+                  <input class="form-check-input" name="checkbox" type="checkbox" value="<%= lists[i].items[j]._id %>" onChange="this.form.submit()" id="flexCheckDefault">
+                  <input type="hidden" name="listName" value="<%= lists[i].name %>">
+                </form>
+                <label class="form-check-label work-detail" for="flexCheckDefault">
+                  <p><%=  lists[i].items[j].name  %></p>
+                </label>
+              </div>
+            <% }; %>
+          </ul>
+          <form class="box" action="/" method="post">
+            <div class="row">
+              <div class="col-8">
+                <input  class="form-control" type="text" name="work" value="" autocomplete = "off">
+                <input type="hidden" name="listName" value="<%= lists[i].name %>">
+              </div>
+              <div class="col-4 button-box">
+                <button class="btn btn-primary mb-3 button-add" type="submit" name="button">Add</button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <% }; %>
+      </div>
+    </div>
+<%- include('footer'); -%>
