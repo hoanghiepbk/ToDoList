@@ -37,67 +37,70 @@ app.use(bodyParser.urlencoded({entend: true}));
 
 app.set('view engine', 'ejs');
 
-app.get('/', function(req, res) {
-    List.find({}, async function(err, foundList){
-    if(!err){
+app.get('/',  function(req, res) {
+   Date.findOne({}, function(err, savedDate){
+    if (savedDate){
       const day = func.getDay();
-      Date.findOne({}, function(err, savedDate){
-        if (savedDate){
-          if(day == savedDate.date){
-            savedDate.date = day;
-            savedDate.save();
-            foundList = [];
-            // foundList.save()
-            console.log("run first")
+      console.log(savedDate.date,day)
+      if(day !== savedDate.date){
+        console.log('here')
+        savedDate.date = day;
+        savedDate.save();
+        console.log("run first")
+        List.deleteMany({}, function(err){
+          if(!err){
+            console.log("Hello new day !")
+            find(res);
           }
-        } else {
-          const date = new Date ({
-            date: day,
-          })
-          date.save();
-        }
-
-      });
-      const lists = foundList;
-      console.log(foundList,"foundList")
-      if(foundList.length == 0){
-        const defaultScore = new Score ({
-          score: 0,
         })
-        defaultScore.save();
-        const workList = new List({
-          name: "Work list",
-          items: []
-        });
-        const homeList = new List({
-          name: "Home list",
-          items: []
-        });
-        const specialList = new List({
-          name: "Special list",
-          items: []
-        });
-        const defaultLists = [workList, homeList, specialList];
-        // await List.insertMany(defaultLists, function(err){
-        //   if (err) {
-        //       console.log(err);
-        //   } else {
-        //       console.log("Successfully !")
-        //       console.log('redirect')
-        //       res.redirect("/");
-        //   }
-        // })
-        const listInsert = await List.insertMany(defaultLists);
-        res.redirect("/");
       } else {
-          Score.find({}, function(err, foundScore){
-          res.render("list", {day: day , lists: lists, score: foundScore[0].score})
-        })
-      }
+        find(res);
+      };
+    } else {
+      const date = new Date ({
+        date: day,
+      })
+      date.save();
     }
-  })
+  });
 
 })
+
+const find = function(res) {
+  List.find({}, async function(err, foundList){
+   console.log("findList")
+   if(!err){
+     const day = func.getDay();
+     const lists = foundList;
+     console.log(foundList,"foundList")
+     if(foundList.length == 0){
+       const defaultScore = new Score ({
+         score: 0,
+       })
+       defaultScore.save();
+       const workList = new List({
+         name: "Work list",
+         items: []
+       });
+       const homeList = new List({
+         name: "Home list",
+         items: []
+       });
+       const specialList = new List({
+         name: "Special list",
+         items: []
+       });
+       const defaultLists = [workList, homeList, specialList];
+       const listInsert = await List.insertMany(defaultLists);
+       res.redirect("/");
+     } else {
+         Score.find({}, function(err, foundScore){
+         res.render("list", {day: day , lists: lists, score: foundScore[0].score})
+       })
+     }
+   }
+  })
+}
 
 app.post('/', function(req, res){
   const listName = req.body.listName;
